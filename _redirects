@@ -1,0 +1,10 @@
+# Cloudflare Pages redirects and rewrites for account-profile
+# See: https://developers.cloudflare.com/pages/configuration/redirects/
+
+# Handle account-profile page with clean URL structure
+# Maps /account-profile/[user-id] to index.html
+# The 200 status makes this a rewrite, not a redirect, keeping the URL intact
+/account-profile/*  /index.html  200
+
+# Homepage fallback
+/  /index.html  200
