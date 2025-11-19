@@ -248,6 +248,116 @@
             resize: vertical;
         }
 
+        /* Ideal Split Schedule */
+        .schedule-section {
+            margin-bottom: 30px;
+        }
+
+        .schedule-week {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .schedule-week .icon {
+            font-size: 24px;
+        }
+
+        .day-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #e5e5e5;
+            background-color: white;
+            color: #666;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .day-button:hover {
+            border-color: #6366f1;
+        }
+
+        .day-button.active {
+            background-color: #6366f1;
+            border-color: #6366f1;
+            color: white;
+        }
+
+        /* Checkbox Grid Sections */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid #d1d5db;
+            cursor: pointer;
+            accent-color: #6366f1;
+        }
+
+        .checkbox-item label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        /* Custom Reasons Text Area */
+        .custom-reasons-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .custom-reasons-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            margin-top: 10px;
+        }
+
+        /* Dropdown */
+        .select-field {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            background-color: white;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
         /* Sidebar */
         .sidebar {
             display: flex;
@@ -629,10 +739,10 @@
                         <input type="file" id="photoFileInput" class="file-input-hidden" accept="image/*">
                     </div>
                     <div class="profile-info">
-                        <div class="profile-name" id="profileName">Sharath Host Sept1</div>
+                        <div class="profile-name" id="profileName"></div>
                         <div class="profile-progress">
                             <div class="progress-circle">
-                                <span class="progress-text">35%</span>
+                                <span class="progress-text">0%</span>
                             </div>
                             <span style="color: #666; font-size: 14px;">Profile progress</span>
                         </div>
@@ -665,7 +775,7 @@
                         <div class="verification-info">
                             <div class="verification-icon">📱</div>
                             <div>
-                                <div id="phoneNumber">8884756854</div>
+                                <div id="phoneNumber"></div>
                                 <div class="verification-status">Unverified</div>
                             </div>
                         </div>
@@ -679,7 +789,7 @@
                         <div class="verification-info">
                             <div class="verification-icon">✉️</div>
                             <div>
-                                <div id="email">splitleasesharath+septh1@gmail.com</div>
+                                <div id="email"></div>
                                 <div class="verification-status">Unverified</div>
                             </div>
                         </div>
@@ -706,7 +816,34 @@
                     <textarea
                         class="biography-textarea"
                         id="biography"
-                        placeholder="Fill out your Bio to improve the chances of getting a reservation">This is a test biography to explore character limits and formatting options. I am a host who loves to share my space with travelers.</textarea>
+                        placeholder="Fill out your Bio to improve the chances of getting a reservation"></textarea>
+                </div>
+
+                <!-- Reasons to Host Me (stored in user table) -->
+                <div class="biography-section">
+                    <h3 class="section-title">About - reasons to host me</h3>
+                    <textarea
+                        class="biography-textarea"
+                        id="reasonsToHostMeText"
+                        placeholder="Why should a host consider you as a guest?"></textarea>
+                </div>
+
+                <!-- Need for Space Section -->
+                <div class="biography-section">
+                    <h3 class="section-title">need for Space</h3>
+                    <textarea
+                        class="biography-textarea"
+                        id="needForSpace"
+                        placeholder="Describe your space requirements"></textarea>
+                </div>
+
+                <!-- Special Needs Section -->
+                <div class="biography-section">
+                    <h3 class="section-title">special needs</h3>
+                    <textarea
+                        class="biography-textarea"
+                        id="specialNeeds"
+                        placeholder="Any special accommodations needed?"></textarea>
                 </div>
 
                 <!-- Action Buttons -->
@@ -720,41 +857,37 @@
 
             <!-- Sidebar -->
             <div class="sidebar">
-                <!-- Listings -->
-                <div class="listings-card">
-                    <h3 class="section-title">Sharath's Listings</h3>
-
-                    <div class="listing-item">
-                        <div class="listing-image">🏠</div>
-                        <div class="listing-details">
-                            <div class="listing-title">Spacious Flatiron 3BR Condo with Doorman, Full Kitchen, Laundry...</div>
-                            <div class="listing-location">
-                                <span>📍</span>
-                                <span>Manhattan, Flatiron</span>
-                            </div>
-                            <div class="listing-features">
-                                <span>3 Bedroom(s)</span>
-                                <span>2.5 Bath(s)</span>
-                                <span>2 guests max</span>
-                            </div>
-                            <div class="listing-actions">
-                                <button class="btn-proposals">
-                                    Proposals
-                                    <span class="proposal-badge">4</span>
-                                </button>
-                                <button class="btn-manage">Manage/Edit</button>
-                            </div>
-                        </div>
+                <!-- Recent Days Selected (from database) -->
+                <div class="profile-card schedule-section">
+                    <h3 class="section-title">Recent Days Selected</h3>
+                    <div class="schedule-week">
+                        <span class="icon">📅</span>
+                        <button class="day-button" data-day="Sunday">S</button>
+                        <button class="day-button" data-day="Monday">M</button>
+                        <button class="day-button" data-day="Tuesday">T</button>
+                        <button class="day-button" data-day="Wednesday">W</button>
+                        <button class="day-button" data-day="Thursday">T</button>
+                        <button class="day-button" data-day="Friday">F</button>
+                        <button class="day-button" data-day="Saturday">S</button>
                     </div>
+                </div>
+
+                <!-- About - Commonly Stored Items (from database, stored as jsonb) -->
+                <div class="profile-card">
+                    <h3 class="section-title">About - Commonly Stored Items</h3>
+                    <textarea
+                        class="custom-reasons-textarea"
+                        id="commonlyStoredItems"
+                        placeholder="List the items you commonly need to store (e.g., work equipment, sports gear, personal belongings)"></textarea>
                 </div>
 
                 <!-- Blog Articles -->
                 <div class="blog-card">
-                    <h3 class="section-title">Blog Articles on Split Leasing</h3>
+                    <h3 class="section-title">Blog Articles related to your stay</h3>
 
                     <div class="blog-item">
                         <div class="blog-thumbnail">📝</div>
-                        <div class="blog-title">Split Lease vs. Airbnb: A Host's Guide to Choosing the Right Platform</div>
+                        <div class="blog-title">Split Lease vs. Airbnb: A Host's Guide to Choosing the Right Platform and why Pied-à-Terre Rentals is superior to short-term rentals</div>
                     </div>
 
                     <div class="blog-item">
@@ -938,8 +1071,11 @@
             const { user, host, guest, listings, reviews } = data;
 
             // Update profile name
-            const fullName = user['Name - Full'] || user['Name - First'] || 'User';
-            document.getElementById('profileName').textContent = fullName;
+            if (user['Name - Full']) {
+                document.getElementById('profileName').textContent = user['Name - Full'];
+            } else if (user['Name - First']) {
+                document.getElementById('profileName').textContent = user['Name - First'];
+            }
 
             // Update profile photo
             if (user['Profile Photo']) {
@@ -958,16 +1094,50 @@
             }
 
             // Update biography
-            const bioText = user['About Me / Bio'] || (host && host.AboutMe) || '';
-            document.getElementById('biography').value = bioText;
+            if (user['About Me / Bio']) {
+                document.getElementById('biography').value = user['About Me / Bio'];
+            }
+
+            // Update reasons to host me text field
+            if (user['About - reasons to host me']) {
+                document.getElementById('reasonsToHostMeText').value = user['About - reasons to host me'];
+            }
+
+            // Update need for space
+            if (user['need for Space']) {
+                document.getElementById('needForSpace').value = user['need for Space'];
+            }
+
+            // Update special needs
+            if (user['special needs']) {
+                document.getElementById('specialNeeds').value = user['special needs'];
+            }
+
+            // Update commonly stored items (stored as text in database)
+            if (user['About - Commonly Stored Items']) {
+                document.getElementById('commonlyStoredItems').value = user['About - Commonly Stored Items'];
+            }
+
+            // Update Recent Days Selected - populate day buttons
+            if (user['Recent Days Selected'] && Array.isArray(user['Recent Days Selected'])) {
+                const selectedDays = user['Recent Days Selected'];
+                document.querySelectorAll('.day-button').forEach(btn => {
+                    const dayName = btn.getAttribute('data-day');
+                    if (selectedDays.includes(dayName)) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
 
             // Update profile completeness
-            const completeness = user['profile completeness'] || 0;
-            const progressCircle = document.querySelector('.progress-circle');
-            const progressText = document.querySelector('.progress-text');
+            if (user['profile completeness']) {
+                const completeness = user['profile completeness'];
+                const progressCircle = document.querySelector('.progress-circle');
+                const progressText = document.querySelector('.progress-text');
 
-            progressCircle.style.background = `conic-gradient(#6366f1 0% ${completeness}%, #e5e5e5 ${completeness}% 100%)`;
-            progressText.textContent = `${completeness}%`;
+                progressCircle.style.background = `conic-gradient(#6366f1 0% ${completeness}%, #e5e5e5 ${completeness}% 100%)`;
+                progressText.textContent = `${completeness}%`;
+            }
 
             // Update verification statuses
             updateVerificationStatus('email', user['is email confirmed']);
@@ -977,12 +1147,6 @@
             // Populate listings
             if (listings && listings.length > 0) {
                 populateListings(listings);
-            } else {
-                // Hide listings section if no listings
-                const listingsCard = document.querySelector('.listings-card');
-                if (listingsCard) {
-                    listingsCard.innerHTML = '<h3 class="section-title">No Listings Yet</h3><p style="color: #666;">Create your first listing to get started!</p>';
-                }
             }
 
             // Populate reviews
@@ -1167,7 +1331,6 @@
                 const userId = getUserIdFromPath();
                 if (!userId) return;
 
-                const bio = document.getElementById('biography').value;
                 const saveBtn = e.target;
                 const originalText = saveBtn.textContent;
 
@@ -1175,12 +1338,33 @@
                     saveBtn.textContent = 'Saving...';
                     saveBtn.classList.add('btn-disabled');
 
-                    const { error } = await supabase
+                    // Collect all form data from actual database fields
+                    const bio = document.getElementById('biography').value;
+                    const reasonsToHostMeText = document.getElementById('reasonsToHostMeText').value;
+                    const needForSpace = document.getElementById('needForSpace').value;
+                    const specialNeeds = document.getElementById('specialNeeds').value;
+                    const commonlyStoredItems = document.getElementById('commonlyStoredItems').value;
+
+                    // Collect Recent Days Selected (day buttons)
+                    const recentDaysSelected = [];
+                    document.querySelectorAll('.day-button.active').forEach(btn => {
+                        recentDaysSelected.push(btn.getAttribute('data-day'));
+                    });
+
+                    // Update user table with actual database fields
+                    const { error: userError } = await supabase
                         .from('user')
-                        .update({ 'About Me / Bio': bio })
+                        .update({
+                            'About Me / Bio': bio,
+                            'About - reasons to host me': reasonsToHostMeText,
+                            'need for Space': needForSpace,
+                            'special needs': specialNeeds,
+                            'About - Commonly Stored Items': commonlyStoredItems,
+                            'Recent Days Selected': recentDaysSelected
+                        })
                         .eq('_id', userId);
 
-                    if (error) throw error;
+                    if (userError) throw userError;
 
                     showToast('Profile saved successfully!', 'success');
                 } catch (error) {
@@ -1267,6 +1451,13 @@
         // Go back button
         document.querySelector('.btn-back')?.addEventListener('click', () => {
             window.history.back();
+        });
+
+        // Day button interactivity
+        document.querySelectorAll('.day-button').forEach(button => {
+            button.addEventListener('click', () => {
+                button.classList.toggle('active');
+            });
         });
     </script>
 </body>
