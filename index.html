@@ -10,6 +10,22 @@
     <link rel="stylesheet" href="/src/styles/footer.css">
 
     <style>
+        /* CSS Variables for Color Consistency */
+        :root {
+            --color-primary-purple: #3D2463;
+            --color-accent-purple: #6366f1;
+            --color-light-purple: #9B7FBF;
+            --color-pale-purple: #E0D7EC;
+            --color-lavender: #C4B5D6;
+            --color-background: #F5F5F5;
+            --color-border: #E5E5E5;
+            --color-text-dark: #333333;
+            --color-text-gray: #666666;
+            --color-emergency-red: #FF5733;
+            --color-success: #10B981;
+            --color-error: #EF4444;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -18,9 +34,10 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
+            background-color: var(--color-background);
+            color: var(--color-text-dark);
             line-height: 1.6;
+            padding-top: 70px;
         }
 
         .container {
@@ -71,6 +88,7 @@
             font-size: 48px;
             color: #999;
             overflow: hidden;
+            border: 4px solid var(--color-primary-purple);
         }
 
         .profile-photo img {
@@ -79,11 +97,39 @@
             object-fit: cover;
         }
 
+        /* Profile photo hover overlay */
+        .profile-photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: rgba(61, 36, 99, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            cursor: pointer;
+        }
+
+        .profile-photo-container:hover .profile-photo-overlay {
+            opacity: 1;
+        }
+
+        .profile-photo-overlay-text {
+            color: white;
+            font-size: 13px;
+            font-weight: 500;
+            text-align: center;
+        }
+
         .upload-btn {
             position: absolute;
             bottom: 0;
             right: 0;
-            background-color: #6366f1;
+            background-color: var(--color-accent-purple);
             color: white;
             border: none;
             border-radius: 50%;
@@ -104,37 +150,55 @@
         }
 
         .profile-progress {
-            display: flex;
-            align-items: center;
-            gap: 10px;
             margin-top: 15px;
         }
 
-        .progress-circle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: conic-gradient(#6366f1 0% 35%, #e5e5e5 35% 100%);
+        .progress-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            position: relative;
+            margin-bottom: 8px;
         }
 
-        .progress-circle::before {
-            content: '';
-            width: 46px;
-            height: 46px;
-            background-color: white;
-            border-radius: 50%;
-            position: absolute;
-        }
-
-        .progress-text {
-            position: relative;
-            z-index: 1;
-            font-weight: 600;
+        .progress-label {
             font-size: 14px;
+            color: var(--color-text-gray);
+            font-weight: 500;
+        }
+
+        .progress-percentage {
+            font-size: 14px;
+            color: var(--color-accent-purple);
+            font-weight: 600;
+        }
+
+        .progress-bar-track {
+            width: 100%;
+            height: 8px;
+            background-color: var(--color-border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: var(--color-accent-purple);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-info-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 6px;
+            font-size: 13px;
+            color: var(--color-accent-purple);
+            text-decoration: none;
+        }
+
+        .progress-info-link:hover {
+            text-decoration: underline;
         }
 
         /* Settings Navigation */
@@ -185,14 +249,20 @@
         }
 
         .verification-icon {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            background-color: #f0f0f0;
+            background-color: #E8E3F3;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
+            flex-shrink: 0;
+            transition: background-color 0.2s;
+        }
+
+        .verification-item:hover .verification-icon {
+            background-color: #D9D2EA;
         }
 
         .verification-status {
@@ -201,13 +271,15 @@
         }
 
         .verify-btn {
-            padding: 6px 16px;
-            background-color: #6366f1;
+            padding: 8px 20px;
+            background-color: var(--color-accent-purple);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 20px;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
         }
 
         .verify-btn:hover {
@@ -217,12 +289,17 @@
         .edit-btn {
             padding: 6px 16px;
             background-color: transparent;
-            color: #6366f1;
-            border: 1px solid #6366f1;
-            border-radius: 5px;
+            color: var(--color-accent-purple);
+            border: 1px solid var(--color-accent-purple);
+            border-radius: 20px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             margin-left: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .edit-btn:hover {
+            background-color: rgba(99, 102, 241, 0.05);
         }
 
         .privacy-notice {
@@ -241,11 +318,18 @@
             width: 100%;
             min-height: 120px;
             padding: 12px;
-            border: 1px solid #e5e5e5;
+            border: 1px solid var(--color-border);
             border-radius: 8px;
             font-family: inherit;
             font-size: 14px;
             resize: vertical;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .biography-textarea:focus {
+            outline: none;
+            border-color: var(--color-accent-purple);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
         /* Ideal Split Schedule */
@@ -268,9 +352,9 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            border: 2px solid #e5e5e5;
-            background-color: white;
-            color: #666;
+            border: none;
+            background-color: #D3D3D3;
+            color: var(--color-text-gray);
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
@@ -278,13 +362,16 @@
         }
 
         .day-button:hover {
-            border-color: #6366f1;
+            background-color: #C0C0C0;
         }
 
         .day-button.active {
-            background-color: #6366f1;
-            border-color: #6366f1;
+            background-color: var(--color-primary-purple);
             color: white;
+        }
+
+        .day-button.active:hover {
+            background-color: #4A2E75;
         }
 
         /* Checkbox Grid Sections */
@@ -349,13 +436,20 @@
         .select-field {
             width: 100%;
             padding: 12px;
-            border: 1px solid #e5e5e5;
+            border: 1px solid var(--color-border);
             border-radius: 8px;
             font-family: inherit;
             font-size: 14px;
             background-color: white;
             cursor: pointer;
             margin-top: 10px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .select-field:focus {
+            outline: none;
+            border-color: var(--color-accent-purple);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
         /* Sidebar */
@@ -520,13 +614,15 @@
         }
 
         .btn-save {
-            padding: 12px 30px;
-            background-color: #6366f1;
+            padding: 12px 40px;
+            background-color: var(--color-accent-purple);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 25px;
             cursor: pointer;
             font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.2s;
         }
 
         .btn-save:hover {
@@ -535,12 +631,18 @@
 
         .btn-back {
             padding: 12px 30px;
-            background-color: transparent;
-            color: #6366f1;
-            border: 1px solid #6366f1;
-            border-radius: 5px;
+            background-color: var(--color-light-purple);
+            color: white;
+            border: none;
+            border-radius: 25px;
             cursor: pointer;
             font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .btn-back:hover {
+            background-color: #8968A8;
         }
 
         .delete-account {
@@ -741,10 +843,17 @@
                     <div class="profile-info">
                         <div class="profile-name" id="profileName"></div>
                         <div class="profile-progress">
-                            <div class="progress-circle">
-                                <span class="progress-text">0%</span>
+                            <div class="progress-header">
+                                <span class="progress-label">Profile progress</span>
+                                <span class="progress-percentage" id="progressPercentage">0%</span>
                             </div>
-                            <span style="color: #666; font-size: 14px;">Profile progress</span>
+                            <div class="progress-bar-track">
+                                <div class="progress-bar-fill" id="progressBarFill" style="width: 0%"></div>
+                            </div>
+                            <a href="#" class="progress-info-link">
+                                <span>ℹ️</span>
+                                What's this?
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -1153,14 +1262,16 @@
                 });
             }
 
-            // Update profile completeness
+            // Update profile completeness (horizontal progress bar)
             if (user['profile completeness']) {
                 const completeness = user['profile completeness'];
-                const progressCircle = document.querySelector('.progress-circle');
-                const progressText = document.querySelector('.progress-text');
+                const progressBarFill = document.getElementById('progressBarFill');
+                const progressPercentage = document.getElementById('progressPercentage');
 
-                progressCircle.style.background = `conic-gradient(#6366f1 0% ${completeness}%, #e5e5e5 ${completeness}% 100%)`;
-                progressText.textContent = `${completeness}%`;
+                if (progressBarFill && progressPercentage) {
+                    progressBarFill.style.width = `${completeness}%`;
+                    progressPercentage.textContent = `${completeness}%`;
+                }
             }
 
             // Update verification statuses dynamically

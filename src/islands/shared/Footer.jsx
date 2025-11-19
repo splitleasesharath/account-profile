@@ -204,6 +204,14 @@ export default function Footer() {
             </button>
           </div>
         </div>
+
+        {/* Emergency Assistance */}
+        <div className="emergency-assistance-container">
+          <button className="emergency-button" onClick={() => window.location.href = 'tel:1-800-SPLIT-LE'}>
+            <span className="emergency-icon">🚨</span>
+            Emergency Assistance
+          </button>
+        </div>
       </footer>
 
       {/* App Download Section */}

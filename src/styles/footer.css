@@ -2,9 +2,10 @@
 /* Imported from Split Lease main app */
 
 .main-footer {
-  background-color: #f8f8f8;
+  background-color: #3D2463;
   padding: 60px 20px 40px;
   margin-top: 80px;
+  color: white;
 }
 
 .footer-container {
@@ -23,26 +24,28 @@
 
 .footer-column h4 {
   font-size: 16px;
-  font-weight: 700;
-  color: #333;
+  font-weight: 600;
+  color: white;
   margin-bottom: 8px;
 }
 
 .footer-column a {
-  color: #666;
+  color: #C4B5D6;
   text-decoration: none;
   font-size: 14px;
+  line-height: 2;
   transition: color 0.2s;
 }
 
 .footer-column a:hover {
-  color: #5B21B6;
+  color: white;
+  text-decoration: underline;
 }
 
 /* Referral section */
 .referral-text {
   font-size: 13px;
-  color: #666;
+  color: #E0D7EC;
   margin-bottom: 12px;
 }
 
@@ -57,7 +60,7 @@
   align-items: center;
   gap: 6px;
   font-size: 14px;
-  color: #333;
+  color: white;
   cursor: pointer;
 }
 
@@ -67,26 +70,32 @@
 
 .referral-input {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  padding: 10px 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
   font-size: 14px;
   margin-bottom: 10px;
+  color: white;
+}
+
+.referral-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .share-btn {
   padding: 10px 20px;
-  background-color: #5B21B6;
+  background-color: #9B7FBF;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 25px;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .share-btn:hover {
-  background-color: #4c1d95;
+  background-color: #8968A8;
 }
 
 .share-btn:disabled {
@@ -97,37 +106,80 @@
 /* Import section */
 .import-text {
   font-size: 13px;
-  color: #666;
+  color: #E0D7EC;
   margin-bottom: 12px;
 }
 
 .import-input {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  padding: 10px 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
   font-size: 14px;
   margin-bottom: 10px;
+  color: white;
+}
+
+.import-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .import-btn {
   padding: 10px 20px;
-  background-color: #5B21B6;
+  background-color: #9B7FBF;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 25px;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .import-btn:hover {
-  background-color: #4c1d95;
+  background-color: #8968A8;
 }
 
 .import-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Emergency Assistance */
+.emergency-assistance-container {
+  margin-top: 40px;
+  text-align: center;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.emergency-button {
+  background-color: #FF5733;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 15px 40px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(255, 87, 51, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.emergency-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 87, 51, 0.4);
+}
+
+.emergency-icon {
+  font-size: 18px;
 }
 
 /* App download section */
@@ -215,7 +267,7 @@
   max-width: 1200px;
   margin: 40px auto 0;
   padding: 20px 20px 0;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -224,7 +276,7 @@
 }
 
 .footer-bottom a {
-  color: #666;
+  color: #C4B5D6;
   text-decoration: none;
   font-size: 14px;
   display: flex;
@@ -233,11 +285,12 @@
 }
 
 .footer-bottom a:hover {
-  color: #5B21B6;
+  color: white;
+  text-decoration: underline;
 }
 
 .footer-bottom span {
-  color: #999;
+  color: #E0D7EC;
   font-size: 14px;
 }
 
