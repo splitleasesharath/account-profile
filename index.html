@@ -760,7 +760,7 @@
                 <div class="verification-section">
                     <h3 class="section-title">Verification</h3>
 
-                    <div class="verification-item">
+                    <div class="verification-item" data-verification="linkedin">
                         <div class="verification-info">
                             <div class="verification-icon">🔗</div>
                             <div>
@@ -771,7 +771,7 @@
                         <button class="edit-btn">edit</button>
                     </div>
 
-                    <div class="verification-item">
+                    <div class="verification-item" data-verification="phone">
                         <div class="verification-info">
                             <div class="verification-icon">📱</div>
                             <div>
@@ -785,7 +785,7 @@
                         </div>
                     </div>
 
-                    <div class="verification-item">
+                    <div class="verification-item" data-verification="email">
                         <div class="verification-info">
                             <div class="verification-icon">✉️</div>
                             <div>
@@ -796,7 +796,7 @@
                         <button class="verify-btn">Verify</button>
                     </div>
 
-                    <div class="verification-item">
+                    <div class="verification-item" data-verification="identity">
                         <div class="verification-info">
                             <div class="verification-icon">🪪</div>
                             <div>
@@ -846,6 +846,18 @@
                         placeholder="Any special accommodations needed?"></textarea>
                 </div>
 
+                <!-- Transportation Dropdown (GUEST-only, Phase 2.1) -->
+                <div class="biography-section" id="transportationSection">
+                    <h3 class="section-title">How do you get to NYC?</h3>
+                    <select id="transportation" class="select-field">
+                        <option value="">Select...</option>
+                        <option value="mostly-drive">Mostly drive</option>
+                        <option value="mostly-fly">Mostly fly</option>
+                        <option value="public-transit">Take public transit</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
                 <!-- Action Buttons -->
                 <div class="action-buttons">
                     <button class="btn-back">Go Back</button>
@@ -872,13 +884,12 @@
                     </div>
                 </div>
 
-                <!-- About - Commonly Stored Items (from database, stored as jsonb) -->
+                <!-- About - Commonly Stored Items (Phase 3.2 - from zat_storage table, stored as jsonb array) -->
                 <div class="profile-card">
                     <h3 class="section-title">About - Commonly Stored Items</h3>
-                    <textarea
-                        class="custom-reasons-textarea"
-                        id="commonlyStoredItems"
-                        placeholder="List the items you commonly need to store (e.g., work equipment, sports gear, personal belongings)"></textarea>
+                    <div class="checkbox-grid" id="storedItemsGrid">
+                        <!-- Dynamically populated from zat_storage table -->
+                    </div>
                 </div>
 
                 <!-- Blog Articles -->
@@ -1070,6 +1081,11 @@
         function populateUserProfile(data) {
             const { user, host, guest, listings, reviews } = data;
 
+            // Phase 4: Detect user type and apply conditional visibility
+            const userType = getUserType(user);
+            console.log('User type detected:', userType);
+            applyUserTypeVisibility(userType);
+
             // Update profile name
             if (user['Name - Full']) {
                 document.getElementById('profileName').textContent = user['Name - Full'];
@@ -1113,10 +1129,18 @@
                 document.getElementById('specialNeeds').value = user['special needs'];
             }
 
-            // Update commonly stored items (stored as text in database)
-            if (user['About - Commonly Stored Items']) {
-                document.getElementById('commonlyStoredItems').value = user['About - Commonly Stored Items'];
+            // Update transportation medium (Phase 2.1)
+            if (user['transportation medium']) {
+                const transportationSelect = document.getElementById('transportation');
+                if (transportationSelect) {
+                    transportationSelect.value = user['transportation medium'];
+                }
             }
+
+            // Phase 3.2: Populate Commonly Stored Items checkboxes (stored as JSONB array of IDs)
+            const userStoredItems = user['About - Commonly Stored Items'];
+            const selectedItemIds = Array.isArray(userStoredItems) ? userStoredItems : [];
+            populateStorageItemsCheckboxes(selectedItemIds);
 
             // Update Recent Days Selected - populate day buttons
             if (user['Recent Days Selected'] && Array.isArray(user['Recent Days Selected'])) {
@@ -1139,10 +1163,20 @@
                 progressText.textContent = `${completeness}%`;
             }
 
-            // Update verification statuses
-            updateVerificationStatus('email', user['is email confirmed']);
-            updateVerificationStatus('phone', user['Verify - Phone']);
-            updateVerificationStatus('identity', user['user verified?']);
+            // Update verification statuses dynamically
+            const verifications = {
+                linkedin: !!user['Verify - Linked In ID'], // truthy check on text field
+                phone: user['Verify - Phone'], // boolean
+                email: user['is email confirmed'], // boolean
+                identity: user['user verified?'] // boolean
+            };
+
+            // Update UI for each verified item
+            Object.entries(verifications).forEach(([type, isVerified]) => {
+                if (isVerified) {
+                    updateVerificationStatus(type, true);
+                }
+            });
 
             // Populate listings
             if (listings && listings.length > 0) {
@@ -1155,31 +1189,19 @@
             }
         }
 
-        // Update verification status UI
+        // Update verification status UI - using data attributes for precise selection
         function updateVerificationStatus(type, isVerified) {
-            const verificationItems = document.querySelectorAll('.verification-item');
+            const item = document.querySelector(`[data-verification="${type}"]`);
+            if (!item) return;
 
-            verificationItems.forEach(item => {
-                const text = item.textContent.toLowerCase();
+            const statusEl = item.querySelector('.verification-status');
+            const verifyBtn = item.querySelector('.verify-btn');
 
-                if ((type === 'email' && text.includes('@')) ||
-                    (type === 'phone' && text.includes('888')) ||
-                    (type === 'identity' && text.includes('identity')) ||
-                    (type === 'linkedin' && text.includes('linkedin'))) {
-
-                    const statusElement = item.querySelector('.verification-status');
-                    if (statusElement && isVerified) {
-                        statusElement.textContent = 'Verified ✓';
-                        statusElement.style.color = '#10b981';
-
-                        // Hide verify button if verified
-                        const verifyBtn = item.querySelector('.verify-btn');
-                        if (verifyBtn) {
-                            verifyBtn.style.display = 'none';
-                        }
-                    }
-                }
-            });
+            if (isVerified) {
+                statusEl.textContent = 'Verified ✓';
+                statusEl.style.color = '#10b981';
+                if (verifyBtn) verifyBtn.style.display = 'none';
+            }
         }
 
         // Populate listings
@@ -1296,6 +1318,90 @@
             container.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Loading profile...</p></div>';
         }
 
+        // Phase 3.2: Load storage items from zat_storage table
+        async function loadStorageItems() {
+            try {
+                const { data, error } = await supabase
+                    .from('zat_storage')
+                    .select('_id, Name')
+                    .order('Name');
+
+                if (error) {
+                    console.error('Error loading storage items:', error);
+                    return [];
+                }
+
+                console.log('Storage items loaded:', data);
+                return data || [];
+            } catch (error) {
+                console.error('Error in loadStorageItems:', error);
+                return [];
+            }
+        }
+
+        // Phase 3.2: Populate storage items checkboxes
+        async function populateStorageItemsCheckboxes(userSelectedItems = []) {
+            const storageItems = await loadStorageItems();
+            const gridContainer = document.getElementById('storedItemsGrid');
+
+            if (!gridContainer || storageItems.length === 0) return;
+
+            const gridHTML = storageItems.map(item => {
+                const isChecked = userSelectedItems.includes(item._id) ? 'checked' : '';
+                return `
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="item-${item._id}" value="${item._id}" ${isChecked}>
+                        <label for="item-${item._id}">${item.Name}</label>
+                    </div>
+                `;
+            }).join('');
+
+            gridContainer.innerHTML = gridHTML;
+        }
+
+        // Phase 4.1: Detect user type (HOST, GUEST, or both)
+        function getUserType(user) {
+            // Check signup type
+            const signupType = user['Type - User Signup']; // "Host" or "Guest"
+
+            // Check if user has active accounts
+            const hasHostAccount = !!user['Account - Host / Landlord'];
+            const hasGuestAccount = !!user['Account - Guest'];
+
+            return {
+                signupType: signupType,
+                isHost: hasHostAccount,
+                isGuest: hasGuestAccount,
+                isDualRole: hasHostAccount && hasGuestAccount,
+                primaryRole: signupType || (hasHostAccount ? 'Host' : 'Guest')
+            };
+        }
+
+        // Phase 4.2: Show/Hide sections based on user type
+        function applyUserTypeVisibility(userType) {
+            console.log('Applying user type visibility:', userType);
+
+            // Guest-only sections
+            const guestSections = [
+                { id: 'transportationSection', type: 'section' }, // Transportation dropdown
+                { id: 'storedItemsGrid', type: 'parent' } // Commonly Stored Items (get parent card)
+            ];
+
+            // Show/hide guest sections
+            guestSections.forEach(({ id, type }) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    const target = type === 'parent' ? element.closest('.profile-card') : element;
+                    if (target) {
+                        target.style.display = userType.isGuest ? 'block' : 'none';
+                    }
+                }
+            });
+
+            // Host-only sections can be added here in the future
+            // Example: Payout Settings link
+        }
+
         // Initialize page
         async function initPage() {
             const userId = getUserIdFromPath();
@@ -1343,7 +1449,15 @@
                     const reasonsToHostMeText = document.getElementById('reasonsToHostMeText').value;
                     const needForSpace = document.getElementById('needForSpace').value;
                     const specialNeeds = document.getElementById('specialNeeds').value;
-                    const commonlyStoredItems = document.getElementById('commonlyStoredItems').value;
+
+                    // Phase 2.1: Transportation
+                    const transportation = document.getElementById('transportation')?.value || null;
+
+                    // Phase 3.2: Collect selected storage items (JSONB array of IDs)
+                    const selectedStorageItems = [];
+                    document.querySelectorAll('#storedItemsGrid input:checked').forEach(cb => {
+                        selectedStorageItems.push(cb.value);
+                    });
 
                     // Collect Recent Days Selected (day buttons)
                     const recentDaysSelected = [];
@@ -1359,7 +1473,8 @@
                             'About - reasons to host me': reasonsToHostMeText,
                             'need for Space': needForSpace,
                             'special needs': specialNeeds,
-                            'About - Commonly Stored Items': commonlyStoredItems,
+                            'transportation medium': transportation, // Phase 2.1
+                            'About - Commonly Stored Items': selectedStorageItems, // Phase 3.2: JSONB array
                             'Recent Days Selected': recentDaysSelected
                         })
                         .eq('_id', userId);
