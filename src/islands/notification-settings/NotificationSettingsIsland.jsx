@@ -7,17 +7,17 @@ import { supabase } from '../../lib/supabase.js';
 export const NotificationSettingsIsland = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [settings, setSettings] = useState({
-    messageForwarding: '',
-    paymentReminders: '',
-    promotional: '',
-    reservationUpdates: '',
-    leaseRequests: '',
-    proposalUpdates: '',
-    checkInCheckOut: '',
-    reviews: '',
-    tipsMarketInsights: '',
-    accountAccessAssistance: '',
-    virtualMeetings: '',
+    messageForwarding: { sms: false, email: false },
+    paymentReminders: { sms: false, email: false },
+    promotional: { sms: false, email: false },
+    reservationUpdates: { sms: false, email: false },
+    leaseRequests: { sms: false, email: false },
+    proposalUpdates: { sms: false, email: false },
+    checkInCheckOut: { sms: false, email: false },
+    reviews: { sms: false, email: false },
+    tipsMarketInsights: { sms: false, email: false },
+    accountAccessAssistance: { sms: false, email: false },
+    virtualMeetings: { sms: false, email: false },
   });
   const [userId, setUserId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,38 +45,64 @@ export const NotificationSettingsIsland = () => {
 
         // Fetch user's notification settings from database
         const { data, error } = await supabase
-          .from('user')
-          .select(`
-            "Notification Settings - Message Forwarding",
-            "Notification Settings - Payment Reminders",
-            "Notification Settings - Promotional",
-            "Notification Settings - Reservation Updates",
-            "Notification Settings - Lease Requests",
-            "Notification Settings - Proposal Updates",
-            "Notification Settings - Check-in/Check-out Reminders",
-            "Notification Settings - Reviews",
-            "Notification Settings - Tips / Market Insights",
-            "Notification Settings - Account Access Assistance",
-            "Notification Settings - Virtual Meetings"
-          `)
-          .eq('_id', user.id)
+          .from('notification_preferences')
+          .select('*')
+          .eq('user_id', user.id)
           .single();
 
         if (error) {
-          console.error('Error fetching notification settings:', error);
+          // If no preferences exist yet (404), use defaults
+          if (error.code === 'PGRST116') {
+            console.log('No notification preferences found, using defaults');
+          } else {
+            console.error('Error fetching notification settings:', error);
+          }
         } else if (data) {
           setSettings({
-            messageForwarding: data['Notification Settings - Message Forwarding'] || '',
-            paymentReminders: data['Notification Settings - Payment Reminders'] || '',
-            promotional: data['Notification Settings - Promotional'] || '',
-            reservationUpdates: data['Notification Settings - Reservation Updates'] || '',
-            leaseRequests: data['Notification Settings - Lease Requests'] || '',
-            proposalUpdates: data['Notification Settings - Proposal Updates'] || '',
-            checkInCheckOut: data['Notification Settings - Check-in/Check-out Reminders'] || '',
-            reviews: data['Notification Settings - Reviews'] || '',
-            tipsMarketInsights: data['Notification Settings - Tips / Market Insights'] || '',
-            accountAccessAssistance: data['Notification Settings - Account Access Assistance'] || '',
-            virtualMeetings: data['Notification Settings - Virtual Meetings'] || '',
+            messageForwarding: {
+              sms: data.message_forwarding_sms || false,
+              email: data.message_forwarding_email || false
+            },
+            paymentReminders: {
+              sms: data.payment_reminders_sms || false,
+              email: data.payment_reminders_email || false
+            },
+            promotional: {
+              sms: data.promotional_sms || false,
+              email: data.promotional_email || false
+            },
+            reservationUpdates: {
+              sms: data.reservation_updates_sms || false,
+              email: data.reservation_updates_email || false
+            },
+            leaseRequests: {
+              sms: data.lease_requests_sms || false,
+              email: data.lease_requests_email || false
+            },
+            proposalUpdates: {
+              sms: data.proposal_updates_sms || false,
+              email: data.proposal_updates_email || false
+            },
+            checkInCheckOut: {
+              sms: data.checkin_checkout_sms || false,
+              email: data.checkin_checkout_email || false
+            },
+            reviews: {
+              sms: data.reviews_sms || false,
+              email: data.reviews_email || false
+            },
+            tipsMarketInsights: {
+              sms: data.tips_insights_sms || false,
+              email: data.tips_insights_email || false
+            },
+            accountAccessAssistance: {
+              sms: data.account_assistance_sms || false,
+              email: data.account_assistance_email || false
+            },
+            virtualMeetings: {
+              sms: data.virtual_meetings_sms || false,
+              email: data.virtual_meetings_email || false
+            },
           });
         }
       } catch (error) {
@@ -109,22 +135,37 @@ export const NotificationSettingsIsland = () => {
       throw new Error('No user logged in');
     }
 
+    // Prepare the data for upsert
+    const dbData = {
+      user_id: userId,
+      message_forwarding_sms: updatedSettings.messageForwarding.sms,
+      message_forwarding_email: updatedSettings.messageForwarding.email,
+      payment_reminders_sms: updatedSettings.paymentReminders.sms,
+      payment_reminders_email: updatedSettings.paymentReminders.email,
+      promotional_sms: updatedSettings.promotional.sms,
+      promotional_email: updatedSettings.promotional.email,
+      reservation_updates_sms: updatedSettings.reservationUpdates.sms,
+      reservation_updates_email: updatedSettings.reservationUpdates.email,
+      lease_requests_sms: updatedSettings.leaseRequests.sms,
+      lease_requests_email: updatedSettings.leaseRequests.email,
+      proposal_updates_sms: updatedSettings.proposalUpdates.sms,
+      proposal_updates_email: updatedSettings.proposalUpdates.email,
+      checkin_checkout_sms: updatedSettings.checkInCheckOut.sms,
+      checkin_checkout_email: updatedSettings.checkInCheckOut.email,
+      reviews_sms: updatedSettings.reviews.sms,
+      reviews_email: updatedSettings.reviews.email,
+      tips_insights_sms: updatedSettings.tipsMarketInsights.sms,
+      tips_insights_email: updatedSettings.tipsMarketInsights.email,
+      account_assistance_sms: updatedSettings.accountAccessAssistance.sms,
+      account_assistance_email: updatedSettings.accountAccessAssistance.email,
+      virtual_meetings_sms: updatedSettings.virtualMeetings.sms,
+      virtual_meetings_email: updatedSettings.virtualMeetings.email,
+    };
+
+    // Use upsert to create or update the record
     const { error } = await supabase
-      .from('user')
-      .update({
-        'Notification Settings - Message Forwarding': updatedSettings.messageForwarding,
-        'Notification Settings - Payment Reminders': updatedSettings.paymentReminders,
-        'Notification Settings - Promotional': updatedSettings.promotional,
-        'Notification Settings - Reservation Updates': updatedSettings.reservationUpdates,
-        'Notification Settings - Lease Requests': updatedSettings.leaseRequests,
-        'Notification Settings - Proposal Updates': updatedSettings.proposalUpdates,
-        'Notification Settings - Check-in/Check-out Reminders': updatedSettings.checkInCheckOut,
-        'Notification Settings - Reviews': updatedSettings.reviews,
-        'Notification Settings - Tips / Market Insights': updatedSettings.tipsMarketInsights,
-        'Notification Settings - Account Access Assistance': updatedSettings.accountAccessAssistance,
-        'Notification Settings - Virtual Meetings': updatedSettings.virtualMeetings,
-      })
-      .eq('_id', userId);
+      .from('notification_preferences')
+      .upsert(dbData, { onConflict: 'user_id' });
 
     if (error) {
       console.error('Error updating notification settings:', error);

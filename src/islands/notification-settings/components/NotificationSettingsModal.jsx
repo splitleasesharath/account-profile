@@ -37,53 +37,35 @@ export const NotificationSettingsModal = ({
 
   /**
    * Check if a notification type is enabled for a category
-   * Implements Bubble's conditional logic
    */
   const isTypeEnabled = useCallback(
     (category, type) => {
-      const value = settings[category] || '';
-      return value.includes(type);
+      const categorySettings = settings[category];
+      if (!categorySettings) return false;
+
+      const channelKey = type.toLowerCase(); // 'SMS' -> 'sms', 'Email' -> 'email'
+      return categorySettings[channelKey] || false;
     },
     [settings]
   );
 
   /**
-   * Handles toggle changes - implements Bubble's two-step workflow
-   * Step 1: If unchecked → remove notification type
-   * Step 2: If checked → add notification type
+   * Handles toggle changes for notification preferences
    */
   const toggleNotification = useCallback(
     async (category, type, enabled) => {
       try {
         setIsSaving(true);
 
-        // Get current value
-        const currentValue = settings[category] || '';
-
-        // Parse existing types
-        const existingTypes = currentValue
-          .split(',')
-          .map((t) => t.trim())
-          .filter((t) => t.length > 0);
-
-        let newValue;
-
-        if (enabled) {
-          // Step 2: Add the notification type (when checked)
-          if (!existingTypes.includes(type)) {
-            existingTypes.push(type);
-          }
-          newValue = existingTypes.join(', ');
-        } else {
-          // Step 1: Remove the notification type (when unchecked)
-          const filtered = existingTypes.filter((t) => t !== type);
-          newValue = filtered.join(', ');
-        }
+        const channelKey = type.toLowerCase(); // 'SMS' -> 'sms', 'Email' -> 'email'
 
         // Create updated settings object
         const updatedSettings = {
           ...settings,
-          [category]: newValue,
+          [category]: {
+            ...settings[category],
+            [channelKey]: enabled,
+          },
         };
 
         // Update local state immediately (optimistic update)
